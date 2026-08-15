@@ -33,13 +33,13 @@ class NeuralNetwork:
         self.b3 = np.zeros(10, dtype=np.float32)
 
     def forward(self, x):
-        z1 = self.W1 @ x + self.b1
+        z1 = x @ self.W1.T + self.b1
         a1 = sigmoid(z1)
 
-        z2 = self.W2 @ a1 + self.b2
+        z2 = a1 @ self.W2.T + self.b2
         a2 = sigmoid(z2)
 
-        z3 = self.W3 @ a2 + self.b3
+        z3 = a2 @ self.W3.T + self.b3
         a3 = sigmoid(z3)
 
         self.cache = {
@@ -55,25 +55,28 @@ class NeuralNetwork:
         return a3
     
     def backward(self, target):
-        x = self.cache["x"]
-        a1 = self.cache["a1"]
-        a2 = self.cache["a2"]
-        a3 = self.cache["a3"]
+        x = np.atleast_2d(self.cache["x"])
+        a1 = np.atleast_2d(self.cache["a1"])
+        a2 = np.atleast_2d(self.cache["a2"])
+        a3 = np.atleast_2d(self.cache["a3"])
+        target = np.atleast_2d(target)
+
+        batch_size = x.shape[0]
 
         # Output layer
         delta3 = (a3 - target) * a3 * (1.0 - a3)
-        dW3 = np.outer(delta3, a2)
-        db3 = delta3.copy()
+        dW3 = delta3.T @ a2 / batch_size
+        db3 = delta3.mean(axis=0)
 
         # Second hidden layer
-        delta2 = (self.W3.T @ delta3) * a2 * (1.0 - a2)
-        dW2 = np.outer(delta2, a1)
-        db2 = delta2.copy()
+        delta2 = (delta3 @ self.W3) * a2 * (1.0 - a2)
+        dW2 = delta2.T @ a1 / batch_size
+        db2 = delta2.mean(axis=0)
 
         # First hidden layer
-        delta1 = (self.W2.T @ delta2) * a1 * (1.0 - a1)
-        dW1 = np.outer(delta1, x)
-        db1 = delta1.copy()
+        delta1 = (delta2 @ self.W2) * a1 * (1.0 - a1)
+        dW1 = delta1.T @ x / batch_size
+        db1 = delta1.mean(axis=0)
 
         return {
             "W1": dW1,
