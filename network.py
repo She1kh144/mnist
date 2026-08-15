@@ -83,3 +83,13 @@ class NeuralNetwork:
             "W3": dW3,
             "b3": db3,
         }
+
+    def step(self, gradients, learning_rate):
+        self.W1 -= learning_rate * gradients["W1"]
+        self.b1 -= learning_rate * gradients["b1"]
+
+        self.W2 -= learning_rate * gradients["W2"]
+        self.b2 -= learning_rate * gradients["b2"]
+
+        self.W3 -= learning_rate * gradients["W3"]
+        self.b3 -= learning_rate * gradients["b3"]
