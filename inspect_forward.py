@@ -7,7 +7,13 @@ nn = NeuralNetwork()
 
 x = x_train[0]
 
-z1, a1 = nn.forward_first_layer(x)
+a3 = nn.forward(x)
+
+z1 = nn.cache["z1"]
+a1 = nn.cache["a1"]
+z2 = nn.cache["z2"]
+a2 = nn.cache["a2"]
+z3 = nn.cache["z3"]
 
 print("Input shape:     ", x.shape)
 print("Weights shape:   ", nn.w1.shape)
@@ -16,15 +22,11 @@ print("z1 shape:        ", z1.shape)
 print("Activation shape:", a1.shape)
 print("Activation range:", a1.min(), a1.max(), end="\n\n")
 
-z2, a2 = nn.forward_second_layer(a1)
-
 print("W2 shape:        ", nn.w2.shape)
 print("b2 shape:        ", nn.b2.shape)
 print("z2 shape:        ", z2.shape)
 print("a2 shape:        ", a2.shape)
 print("a2 range:        ", a2.min(), a2.max(), end="\n\n")
-
-z3, a3 = nn.forward_output_layer(a2)
 
 prediction = int(a3.argmax())
 
