@@ -16,13 +16,13 @@ a2 = nn.cache["a2"]
 z3 = nn.cache["z3"]
 
 print("Input shape:     ", x.shape)
-print("Weights shape:   ", nn.w1.shape)
+print("Weights shape:   ", nn.W1.shape)
 print("Bias shape:      ", nn.b1.shape)
 print("z1 shape:        ", z1.shape)
 print("Activation shape:", a1.shape)
 print("Activation range:", a1.min(), a1.max(), end="\n\n")
 
-print("W2 shape:        ", nn.w2.shape)
+print("W2 shape:        ", nn.W2.shape)
 print("b2 shape:        ", nn.b2.shape)
 print("z2 shape:        ", z2.shape)
 print("a2 shape:        ", a2.shape)
@@ -30,7 +30,7 @@ print("a2 range:        ", a2.min(), a2.max(), end="\n\n")
 
 prediction = int(a3.argmax())
 
-print("W3 shape:        ", nn.w3.shape)
+print("W3 shape:        ", nn.W3.shape)
 print("b3 shape:        ", nn.b3.shape)
 print("Output shape:    ", a3.shape)
 print("Output values:   ", a3.round(4))
@@ -40,10 +40,20 @@ print("Actual digit:    ", y_train[0], end="\n\n")
 target = np.zeros(10, dtype=np.float32)
 target[y_train[0]] = 1.0
 
+gradients = nn.backward(target)
+
+for name, gradient in gradients.items():
+    parameter = getattr(nn, name) # getattr(nn, "w1") is equivalent to nn.w1
+
+    print(
+        f"{name}: parameter {parameter.shape}, "
+        f"gradient {gradient.shape}"
+    )
+
 error = a3 - target
 loss = 0.5 * np.sum(error**2)
 
-print("Target:          ", target)
+print("\nTarget:        ", target)
 print("Error:           ", error.round(4))
 print("Loss:            ", loss, end="\n\n")
 
@@ -64,7 +74,7 @@ print("db3 shape:       ", db3.shape)
 print("dW3[4, 0]:       ", dW3[4, 0])
 print("Manual check:    ", delta3[4] * a2[0], end="\n\n")
 
-dC_da2 = nn.w3.T @ delta3
+dC_da2 = nn.W3.T @ delta3
 da2_dz2 = a2 * (1.0 - a2)
 delta2 = dC_da2 * da2_dz2
 
@@ -81,7 +91,7 @@ print("db2 shape:       ", db2.shape)
 print("dW2[0, 0]:       ", dW2[0, 0])
 print("Manual check:    ", delta2[0] * a1[0], end="\n\n")
 
-dC_da1 = nn.w2.T @ delta2
+dC_da1 = nn.W2.T @ delta2
 da1_dz1 = a1 * (1.0 - a1)
 delta1 = dC_da1 * da1_dz1
 
