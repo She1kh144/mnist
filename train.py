@@ -26,15 +26,22 @@ def main():
     nn = NeuralNetwork()
     rng = np.random.default_rng(42)
 
+    model_path = "mnist_scheduled_network.npz"
+
     training_samples = len(x_train)
-    epochs = 10
+    epochs = 20
     batch_size = 32
     learning_rate = 0.1
 
-    model_path = "mnist_relu_softmax_network.npz"
-
     best_validation_accuracy = -np.inf
     best_epoch = 0
+
+    decay_factor = 0.5
+    patience = 2
+    minimum_learning_rate = 0.001
+
+    best_validation_loss = np.inf
+    epochs_without_improvement = 0
 
     for epoch in range(epochs):
         indices = rng.permutation(training_samples)
@@ -78,6 +85,7 @@ def main():
 
         print(
             f"Epoch {epoch + 1} | "
+            f"LR: {learning_rate:.4f} | "
             f"Train Loss: {average_loss:.4f} | "
             f"Train Accuracy: {accuracy:.2%} | "
             f"Valid Loss: {validation_loss:.4f} | "
@@ -91,6 +99,27 @@ def main():
             nn.save(model_path)
 
             print(f"  Saved new best model at epoch {best_epoch}")
+
+        if validation_loss < best_validation_loss:
+            best_validation_loss = validation_loss
+            epochs_without_improvement = 0
+        else:
+            epochs_without_improvement += 1
+
+            if epochs_without_improvement >= patience:
+                new_learning_rate = max(
+                    minimum_learning_rate,
+                    learning_rate * decay_factor,
+                )
+
+                if new_learning_rate < learning_rate:
+                    learning_rate = new_learning_rate
+                    print(
+                        f"  Reduced learning rate to "
+                        f"{learning_rate:.4f}"
+                    )
+
+                epochs_without_improvement = 0
 
     test_loss, test_accuracy = evaluate(nn, x_test, y_test)
 
