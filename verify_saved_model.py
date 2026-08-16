@@ -3,7 +3,7 @@ from network import NeuralNetwork
 from train import evaluate
 
 def main():
-    _, _, X_test, y_test = load_mnist()
+    *_, X_test, y_test = load_mnist()
 
     nn = NeuralNetwork.load("mnist_relu_softmax_network.npz")
     test_loss, test_accuracy = evaluate(nn, X_test, y_test)
