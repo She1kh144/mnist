@@ -30,32 +30,34 @@ def cross_entropy(output, target):
     return -np.sum(target * np.log(safe_output))
 
 class NeuralNetwork:
-    def __init__(self):
-        rng = np.random.default_rng(42)
+    def __init__(self, seed=42):
+        rng = np.random.default_rng(seed)
 
-        self.W1 = rng.normal(
-            loc=0,
-            scale=1 / np.sqrt(784), # std
-            size=(16, 784)
+        input_size = 784
+        hidden_size_1 = 16
+        hidden_size_2 = 16
+        output_size = 10
+
+        self.W1 = (
+            rng.standard_normal((hidden_size_1, input_size))
+            * np.sqrt(2.0 / input_size)
         ).astype(np.float32)
 
-        self.b1 = np.zeros(16, dtype=np.float32) # begin with no preference
+        self.b1 = np.zeros(hidden_size_1, dtype=np.float32)
 
-        self.W2 = rng.normal(
-            loc=0,
-            scale=1 / np.sqrt(16),
-            size=(16, 16)
+        self.W2 = (
+            rng.standard_normal((hidden_size_2, hidden_size_1))
+            * np.sqrt(2.0 / hidden_size_1)
         ).astype(np.float32)
 
-        self.b2 = np.zeros(16, dtype=np.float32) 
+        self.b2 = np.zeros(hidden_size_2, dtype=np.float32)
 
-        self.W3 = rng.normal(
-            loc=0,
-            scale=1 / np.sqrt(16),
-            size=(10, 16)
+        self.W3 = (
+            rng.standard_normal((output_size, hidden_size_2))
+            * np.sqrt(1.0 / hidden_size_2)
         ).astype(np.float32)
 
-        self.b3 = np.zeros(10, dtype=np.float32)
+        self.b3 = np.zeros(output_size, dtype=np.float32)
 
     def forward(self, x):
         z1 = x @ self.W1.T + self.b1

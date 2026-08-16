@@ -27,9 +27,9 @@ def main():
     rng = np.random.default_rng(42)
 
     training_samples = len(x_train)
-    epochs = 3
+    epochs = 10
     batch_size = 32
-    learning_rate = 3.0
+    learning_rate = 0.1
 
     for epoch in range(epochs):
         indices = rng.permutation(training_samples)
@@ -74,12 +74,12 @@ def main():
     test_loss, test_accuracy = evaluate(nn, x_test, y_test)
 
     print(
-        f"Test | Loss: {test_loss:.4f} | "
+        f"\nTest | Loss: {test_loss:.4f} | "
         f"Accuracy: {test_accuracy:.2%}"
     )
 
-    nn.save("mnist_network.npz")
-    print("Model saved to mnist_network.npz")
+    nn.save("mnist_relu_softmax_network.npz")
+    print("Model saved to mnist_relu_softmax_network.npz")
 
 if __name__ == "__main__":
     main()
