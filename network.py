@@ -96,3 +96,28 @@ class NeuralNetwork:
 
         self.W3 -= learning_rate * gradients["W3"]
         self.b3 -= learning_rate * gradients["b3"]
+
+    def save(self, file_path):
+        np.savez(
+            file_path,
+            W1=self.W1,
+            b1=self.b1,
+            W2=self.W2,
+            b2=self.b2,
+            W3=self.W3,
+            b3=self.b3,
+        )
+
+    @classmethod
+    def load(cls, file_path):
+        nn = cls()
+
+        with np.load(file_path) as parameters:
+            nn.W1 = parameters["W1"]
+            nn.b1 = parameters["b1"]
+            nn.W2 = parameters["W2"]
+            nn.b2 = parameters["b2"]
+            nn.W3 = parameters["W3"]
+            nn.b3 = parameters["b3"]
+
+        return nn

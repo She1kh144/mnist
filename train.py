@@ -78,5 +78,8 @@ def main():
         f"Accuracy: {test_accuracy:.2%}"
     )
 
+    nn.save("mnist_network.npz")
+    print("Model saved to mnist_network.npz")
+
 if __name__ == "__main__":
     main()
