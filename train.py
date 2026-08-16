@@ -26,7 +26,8 @@ def main():
     nn = NeuralNetwork()
     rng = np.random.default_rng(42)
 
-    model_path = "mnist_wide_network.npz"
+    l2_strength = 1e-4
+    model_path = "mnist_l2_network.npz"
 
     training_samples = len(x_train)
     epochs = 20
@@ -71,7 +72,7 @@ def main():
                 (predictions == batch_labels).sum()
             )
 
-            gradients = nn.backward(targets)
+            gradients = nn.backward(targets, l2_strength=l2_strength)
             nn.step(gradients, learning_rate)
 
         average_loss = total_loss / training_samples

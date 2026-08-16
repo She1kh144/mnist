@@ -81,7 +81,7 @@ class NeuralNetwork:
 
         return a3
     
-    def backward(self, target):
+    def backward(self, target, l2_strength=0.0):
         x = np.atleast_2d(self.cache["x"])
         z1 = np.atleast_2d(self.cache["z1"])
         z2 = np.atleast_2d(self.cache["z2"])
@@ -106,6 +106,10 @@ class NeuralNetwork:
         delta1 = (delta2 @ self.W2) * (z1 > 0)
         dW1 = delta1.T @ x / batch_size
         db1 = delta1.mean(axis=0)
+
+        dW1 += l2_strength * self.W1
+        dW2 += l2_strength * self.W2
+        dW3 += l2_strength * self.W3
 
         return {
             "W1": dW1,
