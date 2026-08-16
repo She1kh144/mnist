@@ -1,6 +1,6 @@
 import numpy as np
 from data import load_mnist
-from network import NeuralNetwork
+from network import NeuralNetwork, cross_entropy
 
 def evaluate(nn, images, labels):
     total_loss = 0.0
@@ -12,7 +12,7 @@ def evaluate(nn, images, labels):
 
         output = nn.forward(x)
 
-        total_loss += 0.5 * ((output - target) ** 2).sum()
+        total_loss += cross_entropy(output, target)
         correct_predictions += int(output.argmax() == label)
 
     average_loss = total_loss / len(images)
@@ -52,7 +52,7 @@ def main():
 
             outputs = nn.forward(x_batch)
 
-            total_loss += 0.5 * ((outputs - targets) ** 2).sum()
+            total_loss += cross_entropy(outputs, targets)
 
             predictions = outputs.argmax(axis=1)
             correct_predictions += int(
