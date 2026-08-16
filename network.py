@@ -34,8 +34,8 @@ class NeuralNetwork:
         rng = np.random.default_rng(seed)
 
         input_size = 784
-        hidden_size_1 = 16
-        hidden_size_2 = 16
+        hidden_size_1 = 64
+        hidden_size_2 = 32
         output_size = 10
 
         self.W1 = (

@@ -26,7 +26,7 @@ def main():
     nn = NeuralNetwork()
     rng = np.random.default_rng(42)
 
-    model_path = "mnist_scheduled_network.npz"
+    model_path = "mnist_wide_network.npz"
 
     training_samples = len(x_train)
     epochs = 20
