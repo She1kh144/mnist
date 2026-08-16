@@ -31,6 +31,11 @@ def main():
     batch_size = 32
     learning_rate = 0.1
 
+    model_path = "mnist_relu_softmax_network.npz"
+
+    best_validation_accuracy = -np.inf
+    best_epoch = 0
+
     for epoch in range(epochs):
         indices = rng.permutation(training_samples)
 
@@ -65,11 +70,27 @@ def main():
         average_loss = total_loss / training_samples
         accuracy = correct_predictions / training_samples
 
+        validation_loss, validation_accuracy = evaluate(
+            nn,
+            x_valid,
+            y_valid,
+        )
+
         print(
             f"Epoch {epoch + 1} | "
-            f"Loss: {average_loss:.4f} | "
-            f"Accuracy: {accuracy:.2%}"
+            f"Train Loss: {average_loss:.4f} | "
+            f"Train Accuracy: {accuracy:.2%} | "
+            f"Valid Loss: {validation_loss:.4f} | "
+            f"Valid Accuracy: {validation_accuracy:.2%}"
         )
+
+        if validation_accuracy > best_validation_accuracy:
+            best_validation_accuracy = validation_accuracy
+            best_epoch = epoch + 1
+
+            nn.save(model_path)
+
+            print(f"  Saved new best model at epoch {best_epoch}")
 
     test_loss, test_accuracy = evaluate(nn, x_test, y_test)
 
@@ -77,9 +98,6 @@ def main():
         f"\nTest | Loss: {test_loss:.4f} | "
         f"Accuracy: {test_accuracy:.2%}"
     )
-
-    nn.save("mnist_relu_softmax_network.npz")
-    print("Model saved to mnist_relu_softmax_network.npz")
 
 if __name__ == "__main__":
     main()
