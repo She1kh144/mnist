@@ -15,7 +15,8 @@ def load_mnist(data_dir: str = "data"):
 
     images = images / 255.0  # Normalize pixel values to [0, 1]
 
-    x_train, y_train = images[:60000], labels[:60000]
+    x_train, y_train = images[:50000], labels[:50000]
+    x_valid, y_valid = images[50000:60000], labels[50000:60000]
     x_test, y_test = images[60000:], labels[60000:]
 
-    return x_train, y_train, x_test, y_test
+    return x_train, y_train, x_valid, y_valid, x_test, y_test

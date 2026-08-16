@@ -21,7 +21,7 @@ def evaluate(nn, images, labels):
     return average_loss, accuracy
 
 def main():
-    x_train, y_train, x_test, y_test = load_mnist()
+    x_train, y_train, x_valid, y_valid, x_test, y_test = load_mnist()
 
     nn = NeuralNetwork()
     rng = np.random.default_rng(42)
